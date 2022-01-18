@@ -1,17 +1,19 @@
+type Declaration = {
+  attributes: { [key: string]: string };
+};
+
 interface Document {
-  declaration: {
-    attributes: {};
-  };
+  declaration: Declaration | undefined;
   root: {
     name: string;
-    attributes: {};
-    children: any[];
+    attributes: { [key: string]: string };
+    children: Xml[];
   } | undefined;
 }
 
 interface Xml {
   name: string;
-  attributes: any;
+  attributes: { [key: string]: string };
   content?: string;
   children: Xml[];
 }
@@ -39,7 +41,7 @@ export default function parse(xml: string): Document {
   function document(): Document {
     return {
       declaration: declaration(),
-      root: tag()
+      root: tag(),
     };
   }
 
@@ -48,17 +50,17 @@ export default function parse(xml: string): Document {
    */
 
   function declaration() {
-    var m = match(/^<\?xml\s*/);
+    const m = match(/^<\?xml\s*/);
     if (!m) return;
 
     // tag
-    var node: any = {
-      attributes: {}
+    const node: Declaration = {
+      attributes: {},
     };
 
     // attributes
     while (!(eos() || is("?>"))) {
-      var attr = attribute();
+      const attr = attribute();
       if (!attr) return node;
       node.attributes[attr.name] = attr.value;
     }
@@ -73,19 +75,19 @@ export default function parse(xml: string): Document {
    */
 
   function tag() {
-    var m = match(/^<([\w-:.]+)\s*/);
+    const m = match(/^<([\w-:.]+)\s*/);
     if (!m) return;
 
     // name
-    var node: Xml = {
+    const node: Xml = {
       name: m[1],
       attributes: {},
-      children: []
+      children: [],
     };
 
     // attributes
     while (!(eos() || is(">") || is("?>") || is("/>"))) {
-      var attr = attribute();
+      const attr = attribute();
       if (!attr) return node;
       node.attributes[attr.name] = attr.value;
     }
@@ -101,7 +103,7 @@ export default function parse(xml: string): Document {
     node.content = content();
 
     // children
-    var child;
+    let child;
     while ((child = tag())) {
       node.children.push(child);
     }
@@ -117,7 +119,7 @@ export default function parse(xml: string): Document {
    */
 
   function content() {
-    var m = match(/^([^<]*)/);
+    const m = match(/^([^<]*)/);
     if (m) return m[1];
     return "";
   }
@@ -127,7 +129,7 @@ export default function parse(xml: string): Document {
    */
 
   function attribute() {
-    var m = match(/([\w:-]+)\s*=\s*("[^"]*"|'[^']*'|\w+)\s*/);
+    const m = match(/([\w:-]+)\s*=\s*("[^"]*"|'[^']*'|\w+)\s*/);
     if (!m) return;
     return { name: m[1], value: strip(m[2]) };
   }
@@ -145,7 +147,7 @@ export default function parse(xml: string): Document {
    */
 
   function match(re: RegExp) {
-    var m = xml.match(re);
+    const m = xml.match(re);
     if (!m) return;
     xml = xml.slice(m[0].length);
     return m;
@@ -156,7 +158,7 @@ export default function parse(xml: string): Document {
    */
 
   function eos() {
-    return 0 == xml.length;
+    return 0 === xml.length;
   }
 
   /**
@@ -164,6 +166,6 @@ export default function parse(xml: string): Document {
    */
 
   function is(prefix: string) {
-    return 0 == xml.indexOf(prefix);
+    return 0 === xml.indexOf(prefix);
   }
 }

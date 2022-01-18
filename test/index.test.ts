@@ -1,8 +1,6 @@
-import {
-  assertEquals,
-} from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import parse from "../index.ts";
-const { test, runTests } = Deno
+const { test } = Deno;
 
 test(function blankStrings() {
   const node = parse("");
@@ -63,7 +61,7 @@ test(function weirdWhitespace() {
 
 test(function tagsWithAttributes() {
   const node = parse(
-    "<foo bar=baz some=\"stuff here\" whatever='whoop'></foo>"
+    "<foo bar=baz some=\"stuff here\" whatever='whoop'></foo>",
   );
   assertEquals(node.root, {
     name: "foo",
@@ -207,7 +205,7 @@ test(function attributesWithHyphen() {
 
 test(function tagsWithDot() {
   const node = parse(
-    '<root><c:Key.Columns><o:Column Ref="ol1"/></c:Key.Columns><c:Key.Columns><o:Column Ref="ol2"/></c:Key.Columns></root>'
+    '<root><c:Key.Columns><o:Column Ref="ol1"/></c:Key.Columns><c:Key.Columns><o:Column Ref="ol2"/></c:Key.Columns></root>',
   );
   assertEquals(node.root, {
     name: "root",
@@ -251,7 +249,7 @@ test(function tagsWithHyphen() {
     "<root>" +
       "<data-field1>val1</data-field1>" +
       "<data-field2>val2</data-field2>" +
-      "</root>"
+      "</root>",
   );
   assertEquals(node.root, {
     name: "root",
@@ -273,5 +271,3 @@ test(function tagsWithHyphen() {
     ],
   });
 });
-
-runTests();
