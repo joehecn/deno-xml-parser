@@ -2,20 +2,20 @@ type Declaration = {
   attributes: { [key: string]: string };
 };
 
-interface Document {
+interface Xml {
+  name: string;
+  attributes: { [key: string]: string };
+  content?: string;
+  children: Xml[];
+}
+
+export interface Document {
   declaration: Declaration | undefined;
   root: {
     name: string;
     attributes: { [key: string]: string };
     children: Xml[];
   } | undefined;
-}
-
-interface Xml {
-  name: string;
-  attributes: { [key: string]: string };
-  content?: string;
-  children: Xml[];
 }
 
 /**
@@ -26,7 +26,7 @@ interface Xml {
  * @api public
  */
 
-export default function parse(xml: string): Document {
+export function parse(xml: string): Document {
   xml = xml.trim();
 
   // strip comments
