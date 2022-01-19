@@ -1,21 +1,17 @@
-type Declaration = {
-  attributes: { [key: string]: string };
-};
+// type Declaration = {
+//   attributes: { [key: string]: string };
+// };
 
-interface Xml {
-  name: string;
+export interface Xml {
+  name?: string;
   attributes: { [key: string]: string };
   content?: string;
-  children: Xml[];
+  children?: Xml[];
 }
 
 export interface Document {
-  declaration: Declaration | undefined;
-  root: {
-    name: string;
-    attributes: { [key: string]: string };
-    children: Xml[];
-  } | undefined;
+  declaration?: Xml;
+  root?: Xml;
 }
 
 /**
@@ -54,7 +50,7 @@ export function parse(xml: string): Document {
     if (!m) return;
 
     // tag
-    const node: Declaration = {
+    const node: Xml = {
       attributes: {},
     };
 
@@ -105,7 +101,7 @@ export function parse(xml: string): Document {
     // children
     let child;
     while ((child = tag())) {
-      node.children.push(child);
+      node.children?.push(child);
     }
 
     // closing
